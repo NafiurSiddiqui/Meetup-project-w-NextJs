@@ -39,3 +39,9 @@ function HomePage() {
 	return <MeetupList meetups={loadedMeetups} />;
 }
 export default HomePage;
+
+/**
+* NOTE that we will have two component render cycle here. 
+first cycle - intiial component render cycle.
+-- at this stage the useState has no data, therefore we initiated with an empty array.
+*/
