@@ -10,3 +10,7 @@ function NewMeetupPage() {
 	return <NewMeetupForm onAddMeetup={addMeetUpHandler} />;
 }
 export default NewMeetupPage;
+
+/**
+ * we DO NOT need the DATA here, hence we will not call the @getStaticProp
+ */

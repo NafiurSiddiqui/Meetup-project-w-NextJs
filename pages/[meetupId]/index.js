@@ -12,4 +12,29 @@ function MeetUpDetails() {
 		/>
 	);
 }
+
+export async function getstaticProps(context) {
+	//fetch data for a single meetup
+	//for this we need an ID
+	const meetupId = context.params.meetupId;
+	console.log(meetupId);
+	return {
+		props: {
+			meetupData: {
+				image:
+					"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
+				id: meetupId,
+				title: "first meetup",
+				address: "Some street 5, Some City",
+				description: "This is a first meetup",
+			},
+		},
+	};
+}
+
 export default MeetUpDetails;
+
+/**
+ * HERE WE NEED THE DATA, hence we will call the @getStaticProp
+ * @context - here in the staticProps, we have access to the URL path / parameters. We could use the Router here, but router could not be used outside of the component function. Hence, we needed the context here.
+ */
