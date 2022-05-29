@@ -13,6 +13,24 @@ function MeetUpDetails() {
 	);
 }
 
+export async function getStaticPath() {
+	return {
+		fallback: false,
+		paths: [
+			{
+				params: {
+					meetupId: "m1",
+				},
+			},
+			{
+				params: {
+					meetupId: "m2",
+				},
+			},
+		],
+	};
+}
+
 export async function getstaticProps(context) {
 	//fetch data for a single meetup
 	//for this we need an ID
@@ -37,4 +55,6 @@ export default MeetUpDetails;
 /**
  * HERE WE NEED THE DATA, hence we will call the @getStaticProp
  * @context - here in the staticProps, we have access to the URL path / parameters. We could use the Router here, but router could not be used outside of the component function. Hence, we needed the context here.
+ *
+ * @getStaticPath - is needed if you are using a dynamic page and using a getStaticProp.
  */
