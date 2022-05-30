@@ -13,7 +13,7 @@ function MeetUpDetails() {
 	);
 }
 
-export async function getStaticPath() {
+export async function getStaticPaths() {
 	return {
 		fallback: false,
 		paths: [
@@ -31,11 +31,12 @@ export async function getStaticPath() {
 	};
 }
 
-export async function getstaticProps(context) {
+export async function getStaticProps(context) {
 	//fetch data for a single meetup
 	//for this we need an ID
 	const meetupId = context.params.meetupId;
 	console.log(meetupId);
+	//note that this console.log is ran during build time, so you will see it in the console but not in the Browser dev tools.
 	return {
 		props: {
 			meetupData: {
