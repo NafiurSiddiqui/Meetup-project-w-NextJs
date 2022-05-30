@@ -3,8 +3,8 @@
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 
 function NewMeetupPage() {
-	const addMeetUpHandler = (enteredMeetup) => {
-		console.log(enteredMeetup);
+	const addMeetUpHandler = (enteredMeetupData) => {
+		console.log(enteredMeetupData);
 	};
 
 	return <NewMeetupForm onAddMeetup={addMeetUpHandler} />;
