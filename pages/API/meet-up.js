@@ -14,7 +14,7 @@ async function Handler(req, res) {
 		//NOW store these in the DB
 
 		const client = await MongoClient.connect(
-			"mongodb+srv://eddie:ebvJuTQGlg7mJNrb@cluster0.j5aet.mongodb.net/meetups?retryWrites=true&w=majority"
+			"mongodb+srv://eddie:<pass>.j5aet.mongodb.net/meetups?retryWrites=true&w=majority"
 		);
 		const db = client.db();
 
