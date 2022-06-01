@@ -14,7 +14,9 @@ async function Handler(req, res) {
 		// //--these are the four field we expect from meetup submission.
 
 		//NOW store these in the DB
-		const client = await MongoClient.connect('');
+		const client = await MongoClient.connect(
+			'mongodb+srv://jim:<pass>@meetupcluster.4lkto.mongodb.net/meetup?retryWrites=true&w=majority'
+		);
 
 		const db = client.db();
 

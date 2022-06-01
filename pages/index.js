@@ -1,25 +1,27 @@
 //our-domain/
-import { useState } from "react";
-import MeetupList from "../components/meetups/MeetupList";
+import { MongoClient } from 'mongodb';
+import { useState } from 'react';
+import MeetupList from '../components/meetups/MeetupList';
+import Head from 'next/head';
 
-const DUMMY_MEETUPS = [
-	{
-		id: "m1",
-		title: "A First Meetup",
-		image:
-			"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-		address: "Some address 5, 12345 Some City",
-		description: "This is a first meetup!",
-	},
-	{
-		id: "m2",
-		title: "A Second Meetup",
-		image:
-			"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-		address: "Some address 10, 12345 Some City",
-		description: "This is a second meetup!",
-	},
-];
+// const DUMMY_MEETUPS = [
+// 	{
+// 		id: 'm1',
+// 		title: 'A First Meetup',
+// 		image:
+// 			'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+// 		address: 'Some address 5, 12345 Some City',
+// 		description: 'This is a first meetup!',
+// 	},
+// 	{
+// 		id: 'm2',
+// 		title: 'A Second Meetup',
+// 		image:
+// 			'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+// 		address: 'Some address 10, 12345 Some City',
+// 		description: 'This is a second meetup!',
+// 	},
+// ];
 
 // function HomePage() {
 // 	return <MeetupList meetups={DUMMY_MEETUPS} />;
@@ -53,15 +55,64 @@ first cycle - intiial component render cycle.
 //--------------------------------------------------------------------------------------------------------------stage 3 (SSG)
 
 function HomePage(props) {
-	return <MeetupList meetups={props.meetups} />;
+	return (
+		<>
+			<Head>
+				<title>Reactive Meetups</title>
+				<meta
+					name="description"
+					content="Explore all the test reactive meetups"
+				/>
+			</Head>
+			<MeetupList meetups={props.meetups} />
+		</>
+	);
 }
-
 export async function getStaticProps() {
 	//we can run any server side code here which only is executed during build process.
 	//FETCH Data from the API
+	// fetch('/api/meetups'); //NO NEED
+
+	//directly connect to the mongoDB and get data
+	const client = await MongoClient.connect(
+		'mongodb+srv://jim:<pass>@meetupcluster.4lkto.mongodb.net/meetup?retryWrites=true&w=majority'
+	);
+
+	const db = client.db();
+
+	const meetupsCollections = db.collection('meetups');
+
+	const meetups = await meetupsCollections.find().toArray();
+	// 👆 gets all the documents from the collection, async task
+	//we called array to get an array of documents
+
+	client.close();
+	//stage-----------1 rendering Dummy meetups
+	// return {
+	// 	props: {
+	// 		meetups: DUMMY_MEETUPS,
+	// 	},
+	// 	revalidate: 10,
+	// };
+	//stage ------------2 rendering actual meetups,
+
+	// return {
+	// 	props: {
+	// 		meetups: meetups,
+	// 	},
+	// 	revalidate: 10,
+	// };
+
+	//stage --------3 / stage2 way gives us error, since ID returns a strange object, we define our own obejct here.
+
 	return {
 		props: {
-			meetups: DUMMY_MEETUPS,
+			meetups: meetups.map((meetup) => ({
+				title: meetup.title,
+				address: meetup.address,
+				image: meetup.image,
+				id: meetup._id.toString(),
+			})),
 		},
 		revalidate: 10,
 	};
@@ -76,6 +127,11 @@ page renering file for more IMPORTANT Info.
 --- the props from here are sent to any component that needs this data. Therefore we set the props as an argument in the home page.
 --- Hence, we do not need the useState and useEffect here anymore.
 --- @revalidate - add this extra property if the data is frequently changing and needs to be re-evaluated.
+
+--@fetch - Normally server side code does not allow you to use fetch, but with next JS you are allowed to use fetch inside getStaticProps.
+BUT there is no point of using client-side fetch() method since the code inside staticProps will run inside server anyway. We can directly write our code here. This alos saves us from extra unnecessary request.
+
+-- @Head - allows to add the HTML meta data, NEVER FORGET THIS!
 **/
 
 //-------------------------------------------------------------------------------------------------------------- SSR ( WE DO NOT NEED SSR here, just to show how it works )
